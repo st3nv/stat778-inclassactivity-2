@@ -1,0 +1,134 @@
+---
+title: "In-class Activity - Week 2"
+author: "Tengyu Song"
+date: "2025-01-29"
+toc: true
+number-sections: false
+highlight-style: pygments
+format: 
+  html: 
+    code-fold: false
+    html-math-method: katex
+theme:
+  - cosmo
+---
+
+# Advanced use of R
+## Lists are your friends
+
+**Create a list pointing to (i) the integer vector 1:5, (ii) the numeric vector 1:5 / 5, and (iii) the character vector letters[1:5]. Call this object a, and the individual elements i, ii, iii.**
+
+```{r}
+a <- list(i = 1:5, ii = 1:5 / 5, iii = letters[1:5])
+a
+```
+
+
+**(a) Write a simple function which takes such a list of the form of a and a power argument, and raises the numbers in element ii to the given power. Call the function on the list you created and assign the return value to a new name, e.g., b. Print the addresses of the objects in the original list and the modified list with the function lobstr::ref().**
+
+```{r}
+library(lobstr)
+power <- function(x, p) {
+  x$ii <- x$ii ^ p
+  return(x)
+}
+b <- power(a, 2)
+cat("Address of a:\n")
+ref(a)
+cat("Address of b:\n")
+ref(b)
+```
+
+Notice that the address to the second element of list a is different from the address to the second element of list b, while the other two elements are the same. This is because the second element of list a is modified by the function.
+
+
+**(b)Combine several of these lists into a new list, I’ll call it c. Now extract the elements i from the lists in c with lapply(), using the access operator [[, and assign it to a new name. Inspect the references in this new object with lobstr::ref(). **
+
+```{r}
+a1 <- list(i = 1:5, ii = 1:5 / 5, iii = letters[1:5])
+a2 <- list(i = 1:5, ii = 1:5 / 5, iii = letters[1:5])
+
+c <- list(a1, a2)
+e1 <- lapply(c, function(x) x[[1]])
+
+cat("Address of elements in a1:\n")
+ref(a1)
+cat("Address of elements in a2:\n")
+ref(a2)
+cat("Address of elements in e1:\n")
+ref(e1)
+```
+
+The addresses of the extracted elements align with the addresses of the original elements in a1 and a2.
+
+
+**(c) Do the same as in b, but now use sapply() instead. Is it the same as in b or are there differences? What do we learn from that?**
+
+```{r}
+e2 <- sapply(c, function(x) x[[1]])
+cat("Address of elements in e2:\n")
+ref(e2)
+```
+
+The result from `sapply()` is different from `lapply()`. Instead of a list, `e2` is a vector and `ref` returns a single address.
+
+## Vector layout and subsetting
+
+**Create atomic vector of length 1,000,000. Coerce this vector into a matrix of dimensions 2000 by 500 using (a) the matrix() function and (b) the dim attribute. Which one would you prefer and why?**
+
+```{r}
+x <- 1:1000000
+m1 <- matrix(x, nrow = 2000)
+m2 <- x
+dim(m2) <- c(2000, 500)
+# show the dimension of the two matrices
+dim(m1)
+dim(m2)
+```
+
+The two methods yield the same result. I prefer the first one because it is more explicit and easier to read.
+
+**(a) Of the matrix you created before select the 50th element of the 11th column using the matrix index and the flat index.**
+
+```{r}
+# matrix index
+cat(m1[50, 11], "\n")
+# flat index
+cat(m1[50 + 11 * 2000], "\n")
+```
+
+**(b) Now select the 36,321-th element using the flat index and the matrix index.**
+
+```{r}
+# flat index
+cat(m1[36321], "\n")
+# matrix index
+cat(m1[36321 %% 2000, 36321 %/% 2000 + 1], "\n")
+```
+
+## Batch Processing
+
+**Create a new R script that accepts the following arguments:**
+
+**number of replications (integer > 0), output directory and which simply prints the values of these arguments to the console.**
+
+**Run this R script from within your project directory.**
+
+The answer for this question is in the file `batch_processing.R`.
+
+
+# Basics of python
+
+**Create a new python script and add the following lines to it:
+**
+
+```python
+def main():
+  ...
+
+if __name__ == "__main__":
+  main()
+```
+**Add a comment to briefly explain what this boilerplate code is doing.**
+
+The answer for this question is in the file `python_code.py`.
